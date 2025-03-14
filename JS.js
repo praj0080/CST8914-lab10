@@ -1,9 +1,3 @@
-/*
- *   This content is licensed according to the W3C Software License at
- *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
- *   Desc: Menu button that opens a menu of actions with improved accessibility.
- */
-
 'use strict';
 
 class MenuButtonActions {
@@ -13,8 +7,6 @@ class MenuButtonActions {
     this.buttonNode = domNode.querySelector('button');
     this.menuNode = domNode.querySelector('[role="menu"]');
     this.menuitemNodes = [];
-    this.firstMenuitem = null;
-    this.lastMenuitem = null;
     this.currentIndex = 0;
 
     this.buttonNode.addEventListener('keydown', this.onButtonKeydown.bind(this));
@@ -29,11 +21,6 @@ class MenuButtonActions {
       menuitem.addEventListener('keydown', this.onMenuitemKeydown.bind(this));
       menuitem.addEventListener('click', this.onMenuitemClick.bind(this));
       menuitem.addEventListener('mouseover', this.onMenuitemMouseover.bind(this));
-
-      if (!this.firstMenuitem) {
-        this.firstMenuitem = menuitem;
-      }
-      this.lastMenuitem = menuitem;
     });
 
     domNode.addEventListener('focusin', this.onFocusin.bind(this));
@@ -41,11 +28,17 @@ class MenuButtonActions {
     window.addEventListener('mousedown', this.onBackgroundMousedown.bind(this), true);
   }
 
-  setFocusToMenuitem(newMenuitem) {
-    this.menuitemNodes.forEach(item => item.setAttribute('tabindex', '-1'));
-    newMenuitem.setAttribute('tabindex', '0');
-    newMenuitem.focus();
-    this.currentIndex = this.menuitemNodes.indexOf(newMenuitem);
+  setFocusToMenuitem(newIndex) {
+    // Ensure valid index
+    if (newIndex < 0 || newIndex >= this.menuitemNodes.length) return;
+
+    // Update tabindex for roving index technique
+    this.menuitemNodes[this.currentIndex].setAttribute('tabindex', '-1');
+    this.menuitemNodes[newIndex].setAttribute('tabindex', '0');
+
+    // Move focus
+    this.menuitemNodes[newIndex].focus();
+    this.currentIndex = newIndex;
   }
 
   onButtonKeydown(event) {
@@ -54,12 +47,12 @@ class MenuButtonActions {
       case ' ':
       case 'ArrowDown':
         this.openPopup();
-        this.setFocusToFirstMenuitem();
+        this.setFocusToMenuitem(0); // Focus on the first menu item
         event.preventDefault();
         break;
       case 'ArrowUp':
         this.openPopup();
-        this.setFocusToLastMenuitem();
+        this.setFocusToMenuitem(this.menuitemNodes.length - 1); // Focus on last menu item
         event.preventDefault();
         break;
       case 'Escape':
@@ -70,54 +63,33 @@ class MenuButtonActions {
   }
 
   onMenuitemKeydown(event) {
-    let selectedItem = event.currentTarget;
     switch (event.key) {
-        case 'Enter':
-        case ' ':
-            this.updatePizzaChoice(selectedItem);
-            this.closePopup();
-            this.buttonNode.focus();
-            event.preventDefault();
-            break;
-        case 'ArrowDown':
-            this.setFocusToNextMenuitem(selectedItem);
-            event.preventDefault();
-            break;
-        case 'ArrowUp':
-            this.setFocusToPreviousMenuitem(selectedItem);
-            event.preventDefault();
-            break;
-        case 'Escape':
-            this.closePopup();
-            event.preventDefault();
-            break;
+      case 'Enter':
+      case ' ':
+        this.updatePizzaChoice(event.currentTarget);
+        this.closePopup();
+        this.buttonNode.focus();
+        event.preventDefault();
+        break;
+      case 'ArrowDown':
+        this.setFocusToMenuitem((this.currentIndex + 1) % this.menuitemNodes.length);
+        event.preventDefault();
+        break;
+      case 'ArrowUp':
+        this.setFocusToMenuitem((this.currentIndex - 1 + this.menuitemNodes.length) % this.menuitemNodes.length);
+        event.preventDefault();
+        break;
+      case 'Escape':
+        this.closePopup();
+        event.preventDefault();
+        break;
     }
-  }
-
-  setFocusToFirstMenuitem() {
-    this.setFocusToMenuitem(this.firstMenuitem);
-  }
-
-  setFocusToLastMenuitem() {
-    this.setFocusToMenuitem(this.lastMenuitem);
-  }
-
-  setFocusToNextMenuitem(currentMenuitem) {
-    let index = this.menuitemNodes.indexOf(currentMenuitem);
-    let newIndex = (index + 1) % this.menuitemNodes.length;
-    this.setFocusToMenuitem(this.menuitemNodes[newIndex]);
-  }
-
-  setFocusToPreviousMenuitem(currentMenuitem) {
-    let index = this.menuitemNodes.indexOf(currentMenuitem);
-    let newIndex = (index - 1 + this.menuitemNodes.length) % this.menuitemNodes.length;
-    this.setFocusToMenuitem(this.menuitemNodes[newIndex]);
   }
 
   openPopup() {
     this.menuNode.style.display = 'block';
     this.buttonNode.setAttribute('aria-expanded', 'true');
-    this.setFocusToFirstMenuitem();
+    this.setFocusToMenuitem(0);
   }
 
   closePopup() {
