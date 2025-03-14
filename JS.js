@@ -13,9 +13,8 @@ class MenuButtonActions {
     this.buttonNode = domNode.querySelector('button');
     this.menuNode = domNode.querySelector('[role="menu"]');
     this.menuitemNodes = [];
-    this.firstMenuitem = false;
-      this.lastMenuitem = false;
-    this.firstChars = [];
+    this.firstMenuitem = null;
+    this.lastMenuitem = null;
     this.currentIndex = 0;
 
     this.buttonNode.addEventListener('keydown', this.onButtonKeydown.bind(this));
@@ -26,7 +25,6 @@ class MenuButtonActions {
     nodes.forEach((menuitem, index) => {
       this.menuitemNodes.push(menuitem);
       menuitem.setAttribute('tabindex', index === 0 ? '0' : '-1');
-      this.firstChars.push(menuitem.textContent.trim()[0].toLowerCase());
 
       menuitem.addEventListener('keydown', this.onMenuitemKeydown.bind(this));
       menuitem.addEventListener('click', this.onMenuitemClick.bind(this));
@@ -43,11 +41,12 @@ class MenuButtonActions {
     window.addEventListener('mousedown', this.onBackgroundMousedown.bind(this), true);
   }
 
+  /** ✅ FIX: Properly update focus and tabindex for all menu items */
   setFocusToMenuitem(newMenuitem) {
-    this.menuitemNodes[this.currentIndex].setAttribute('tabindex', '-1');
+    this.menuitemNodes.forEach(item => item.setAttribute('tabindex', '-1')); // Reset all items
+    newMenuitem.setAttribute('tabindex', '0'); // Set focusable item
+    newMenuitem.focus();
     this.currentIndex = this.menuitemNodes.indexOf(newMenuitem);
-    this.menuitemNodes[this.currentIndex].setAttribute('tabindex', '0');
-    this.menuitemNodes[this.currentIndex].focus();
   }
 
   onButtonKeydown(event) {
@@ -71,6 +70,7 @@ class MenuButtonActions {
     }
   }
 
+  /** ✅ FIX: Ensure up/down arrow keys properly cycle through items */
   onMenuitemKeydown(event) {
     switch (event.key) {
       case 'ArrowDown':
@@ -102,12 +102,14 @@ class MenuButtonActions {
     this.setFocusToMenuitem(this.lastMenuitem);
   }
 
+  /** ✅ FIX: Properly cycle to next menu item */
   setFocusToNextMenuitem(currentMenuitem) {
     let index = this.menuitemNodes.indexOf(currentMenuitem);
     let newIndex = (index + 1) % this.menuitemNodes.length;
     this.setFocusToMenuitem(this.menuitemNodes[newIndex]);
   }
 
+  /** ✅ FIX: Properly cycle to previous menu item */
   setFocusToPreviousMenuitem(currentMenuitem) {
     let index = this.menuitemNodes.indexOf(currentMenuitem);
     let newIndex = (index - 1 + this.menuitemNodes.length) % this.menuitemNodes.length;
@@ -117,6 +119,7 @@ class MenuButtonActions {
   openPopup() {
     this.menuNode.style.display = 'block';
     this.buttonNode.setAttribute('aria-expanded', 'true');
+    this.setFocusToFirstMenuitem();
   }
 
   closePopup() {
@@ -136,7 +139,6 @@ class MenuButtonActions {
       this.buttonNode.focus();
     } else {
       this.openPopup();
-      this.setFocusToFirstMenuitem();
     }
     event.preventDefault();
   }
