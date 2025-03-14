@@ -83,16 +83,18 @@ class MenuButtonActions {
 
   openPopup() {
     this.menuNode.style.display = 'block';
+    this.menuNode.classList.add('menu-open'); // Add highlight class
     this.buttonNode.setAttribute('aria-expanded', 'true');
     this.setFocusToMenuitem(0);
-  }
+}
 
-  closePopup() {
+closePopup() {
     if (this.isOpen()) {
-      this.buttonNode.removeAttribute('aria-expanded');
-      this.menuNode.style.display = 'none';
+        this.menuNode.classList.remove('menu-open'); // Remove highlight class
+        this.buttonNode.removeAttribute('aria-expanded');
+        this.menuNode.style.display = 'none';
     }
-  }
+}
 
   isOpen() {
     return this.buttonNode.getAttribute('aria-expanded') === 'true';
