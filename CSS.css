@@ -23,6 +23,8 @@
   border: 2px solid #045a0d;
   border-radius: 5px;
   background-color: #eee;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .menu-button-actions [role="menuitem"],
@@ -34,6 +36,9 @@
   background-color: #eee;
   color: black;
   border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
 }
 
 .menu-button-actions [role="separator"] {
@@ -53,8 +58,7 @@
   transform: rotate(180deg);
 }
 
-/* focus styling */
-
+/* Focus styling */
 .menu-button-actions button:hover,
 .menu-button-actions button:focus,
 .menu-button-actions button[aria-expanded="true"] {
@@ -79,4 +83,21 @@
 input.action:focus {
   outline: 2px solid #045a0d;
   background: #def;
+}
+
+/* Ensuring focus visibility */
+.menu-button-actions [role="menuitem"]:focus {
+  outline: 2px solid #007BFF;
+  background-color: #e0e0e0;
+}
+
+/* Ensure menu shows when open */
+.menu-button-actions button[aria-expanded="true"] + [role="menu"] {
+  display: block;
+}
+
+/* Prevent outline removal */
+button:focus,
+[role="menuitem"]:focus {
+  outline: 2px solid #007BFF !important;
 }
