@@ -71,28 +71,38 @@ class MenuButtonActions {
   }
 
   /** ✅ FIX: Ensure up/down arrow keys properly cycle through items */
-  onMenuitemKeydown(event) {
+ onMenuitemKeydown(event) {
+    let selectedItem = event.currentTarget;
     switch (event.key) {
-      case 'ArrowDown':
-        this.setFocusToNextMenuitem(event.currentTarget);
-        event.preventDefault();
-        break;
-      case 'ArrowUp':
-        this.setFocusToPreviousMenuitem(event.currentTarget);
-        event.preventDefault();
-        break;
-      case 'Enter':
-      case ' ':
-        this.performMenuAction(event.currentTarget);
-        this.closePopup();
-        event.preventDefault();
-        break;
-      case 'Escape':
-        this.closePopup();
-        event.preventDefault();
-        break;
+        case 'Enter':
+        case ' ':
+            // Update the Pizza Choice input box
+            document.getElementById('action_output').value = selectedItem.textContent.trim();
+
+            // Perform action
+            this.performMenuAction(selectedItem);
+
+            // Close the menu
+            this.closePopup();
+
+            // Move focus back to the button
+            this.buttonNode.focus();
+            event.preventDefault();
+            break;
+        case 'ArrowDown':
+            this.setFocusToNextMenuitem(selectedItem);
+            event.preventDefault();
+            break;
+        case 'ArrowUp':
+            this.setFocusToPreviousMenuitem(selectedItem);
+            event.preventDefault();
+            break;
+        case 'Escape':
+            this.closePopup();
+            event.preventDefault();
+            break;
     }
-  }
+}
 
   setFocusToFirstMenuitem() {
     this.setFocusToMenuitem(this.firstMenuitem);
