@@ -32,7 +32,12 @@
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 }
 
-.menu-button-actions [role="menuitem"],
+.menu-button-actions [role="menuitem"]:focus {
+    outline: 2px solid #007BFF;
+    background-color: #e0e0e0;
+    color: black;
+}
+
 .menu-button-actions [role="separator"] {
   margin: 0;
   padding: 8px;
