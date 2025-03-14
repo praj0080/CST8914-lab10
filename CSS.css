@@ -13,6 +13,7 @@
   font-size: 0.9em;
   color: white;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .menu-button-actions [role="menu"] {
@@ -25,20 +26,25 @@
   background-color: #eee;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  min-width: 120px; /* Ensures a minimum width */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 }
 
 .menu-button-actions [role="menuitem"],
 .menu-button-actions [role="separator"] {
   margin: 0;
-  padding: 6px;
+  padding: 8px;
   display: block;
-  width: 4em;
+  width: auto; /* Allow flexible width */
   background-color: #eee;
   color: black;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   text-decoration: none;
+  white-space: nowrap; /* Prevents wrapping */
 }
 
 .menu-button-actions [role="separator"] {
@@ -70,19 +76,14 @@
   margin: 0;
 }
 
-.menu-button-actions [role="menuitem"].focus,
-.menu-button-actions [role="menuitem"]:focus {
-  padding: 4px;
+.menu-button-actions [role="menuitem"]:focus,
+.menu-button-actions [role="menuitem"].focus {
+  padding: 6px;
   border: 2px solid #045a0d;
   background: #045a0d;
   color: #fff;
   outline: none;
   margin: 0;
-}
-
-input.action:focus {
-  outline: 2px solid #045a0d;
-  background: #def;
 }
 
 /* Ensuring focus visibility */
@@ -94,6 +95,8 @@ input.action:focus {
 /* Ensure menu shows when open */
 .menu-button-actions button[aria-expanded="true"] + [role="menu"] {
   display: block;
+  visibility: visible;
+  opacity: 1;
 }
 
 /* Prevent outline removal */
