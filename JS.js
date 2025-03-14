@@ -41,10 +41,9 @@ class MenuButtonActions {
     window.addEventListener('mousedown', this.onBackgroundMousedown.bind(this), true);
   }
 
-  /** ✅ FIX: Properly update focus and tabindex for all menu items */
   setFocusToMenuitem(newMenuitem) {
-    this.menuitemNodes.forEach(item => item.setAttribute('tabindex', '-1')); // Reset all items
-    newMenuitem.setAttribute('tabindex', '0'); // Set focusable item
+    this.menuitemNodes.forEach(item => item.setAttribute('tabindex', '-1'));
+    newMenuitem.setAttribute('tabindex', '0');
     newMenuitem.focus();
     this.currentIndex = this.menuitemNodes.indexOf(newMenuitem);
   }
@@ -70,22 +69,13 @@ class MenuButtonActions {
     }
   }
 
-  /** ✅ FIX: Ensure up/down arrow keys properly cycle through items */
- onMenuitemKeydown(event) {
+  onMenuitemKeydown(event) {
     let selectedItem = event.currentTarget;
     switch (event.key) {
         case 'Enter':
         case ' ':
-            // Update the Pizza Choice input box
-            document.getElementById('action_output').value = selectedItem.textContent.trim();
-
-            // Perform action
-            this.performMenuAction(selectedItem);
-
-            // Close the menu
+            this.updatePizzaChoice(selectedItem);
             this.closePopup();
-
-            // Move focus back to the button
             this.buttonNode.focus();
             event.preventDefault();
             break;
@@ -102,7 +92,7 @@ class MenuButtonActions {
             event.preventDefault();
             break;
     }
-}
+  }
 
   setFocusToFirstMenuitem() {
     this.setFocusToMenuitem(this.firstMenuitem);
@@ -112,14 +102,12 @@ class MenuButtonActions {
     this.setFocusToMenuitem(this.lastMenuitem);
   }
 
-  /** ✅ FIX: Properly cycle to next menu item */
   setFocusToNextMenuitem(currentMenuitem) {
     let index = this.menuitemNodes.indexOf(currentMenuitem);
     let newIndex = (index + 1) % this.menuitemNodes.length;
     this.setFocusToMenuitem(this.menuitemNodes[newIndex]);
   }
 
-  /** ✅ FIX: Properly cycle to previous menu item */
   setFocusToPreviousMenuitem(currentMenuitem) {
     let index = this.menuitemNodes.indexOf(currentMenuitem);
     let newIndex = (index - 1 + this.menuitemNodes.length) % this.menuitemNodes.length;
@@ -154,18 +142,14 @@ class MenuButtonActions {
   }
 
   onMenuitemClick(event) {
-    let selectedItem = event.currentTarget;
-    
-    // Update the Pizza Choice input box
-    document.getElementById('action_output').value = selectedItem.textContent.trim();
-    
-    // Close the menu
+    this.updatePizzaChoice(event.currentTarget);
     this.closePopup();
-    
-    // Move focus back to the button
     this.buttonNode.focus();
-}
+  }
 
+  updatePizzaChoice(selectedItem) {
+    document.getElementById('action_output').value = selectedItem.textContent.trim();
+  }
 
   onBackgroundMousedown(event) {
     if (!this.domNode.contains(event.target)) {
@@ -178,12 +162,8 @@ class MenuButtonActions {
 window.addEventListener('load', function () {
   document.getElementById('action_output').value = 'none';
 
-  function performMenuAction(node) {
-    document.getElementById('action_output').value = node.textContent.trim();
-  }
-
   let menuButtons = document.querySelectorAll('.menu-button-actions');
   menuButtons.forEach(menuButton => {
-    new MenuButtonActions(menuButton, performMenuAction);
+    new MenuButtonActions(menuButton);
   });
 });
