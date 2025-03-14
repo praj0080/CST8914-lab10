@@ -1,42 +1,33 @@
 'use strict';
 
 class MenuButtonActions {
-  constructor(domNode, performMenuAction) {
+  constructor(domNode) {
     this.domNode = domNode;
-    this.performMenuAction = performMenuAction;
     this.buttonNode = domNode.querySelector('button');
     this.menuNode = domNode.querySelector('[role="menu"]');
-    this.menuitemNodes = [];
+    this.menuitemNodes = Array.from(domNode.querySelectorAll('[role="menuitem"]'));
     this.currentIndex = 0;
 
     this.buttonNode.addEventListener('keydown', this.onButtonKeydown.bind(this));
     this.buttonNode.addEventListener('click', this.onButtonClick.bind(this));
 
-    let nodes = domNode.querySelectorAll('[role="menuitem"]');
-
-    nodes.forEach((menuitem, index) => {
-      this.menuitemNodes.push(menuitem);
+    this.menuitemNodes.forEach((menuitem, index) => {
       menuitem.setAttribute('tabindex', index === 0 ? '0' : '-1');
-
       menuitem.addEventListener('keydown', this.onMenuitemKeydown.bind(this));
       menuitem.addEventListener('click', this.onMenuitemClick.bind(this));
-      menuitem.addEventListener('mouseover', this.onMenuitemMouseover.bind(this));
     });
 
-    domNode.addEventListener('focusin', this.onFocusin.bind(this));
-    domNode.addEventListener('focusout', this.onFocusout.bind(this));
     window.addEventListener('mousedown', this.onBackgroundMousedown.bind(this), true);
   }
 
   setFocusToMenuitem(newIndex) {
-    // Ensure valid index
     if (newIndex < 0 || newIndex >= this.menuitemNodes.length) return;
 
-    // Update tabindex for roving index technique
+    // Remove old focus and set tabindex="-1"
     this.menuitemNodes[this.currentIndex].setAttribute('tabindex', '-1');
+    
+    // Set new focus and update tabindex
     this.menuitemNodes[newIndex].setAttribute('tabindex', '0');
-
-    // Move focus
     this.menuitemNodes[newIndex].focus();
     this.currentIndex = newIndex;
   }
@@ -47,12 +38,12 @@ class MenuButtonActions {
       case ' ':
       case 'ArrowDown':
         this.openPopup();
-        this.setFocusToMenuitem(0); // Focus on the first menu item
+        this.setFocusToMenuitem(0);
         event.preventDefault();
         break;
       case 'ArrowUp':
         this.openPopup();
-        this.setFocusToMenuitem(this.menuitemNodes.length - 1); // Focus on last menu item
+        this.setFocusToMenuitem(this.menuitemNodes.length - 1);
         event.preventDefault();
         break;
       case 'Escape':
@@ -63,20 +54,24 @@ class MenuButtonActions {
   }
 
   onMenuitemKeydown(event) {
+    let newIndex = this.currentIndex;
+
     switch (event.key) {
       case 'Enter':
       case ' ':
-        this.updatePizzaChoice(event.currentTarget);
+        this.updatePizzaChoice(this.menuitemNodes[this.currentIndex]);
         this.closePopup();
         this.buttonNode.focus();
         event.preventDefault();
         break;
       case 'ArrowDown':
-        this.setFocusToMenuitem((this.currentIndex + 1) % this.menuitemNodes.length);
+        newIndex = (this.currentIndex + 1) % this.menuitemNodes.length;
+        this.setFocusToMenuitem(newIndex);
         event.preventDefault();
         break;
       case 'ArrowUp':
-        this.setFocusToMenuitem((this.currentIndex - 1 + this.menuitemNodes.length) % this.menuitemNodes.length);
+        newIndex = (this.currentIndex - 1 + this.menuitemNodes.length) % this.menuitemNodes.length;
+        this.setFocusToMenuitem(newIndex);
         event.preventDefault();
         break;
       case 'Escape':
