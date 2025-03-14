@@ -43,14 +43,16 @@
   width: 100%;
 }
 
+/* 🔥 Change background color when menu is opened */
 .menu-button-actions button[aria-expanded="true"] + [role="menu"] {
-  background-color: #d0ebff; /* Light Blue */
-  border-color: #0056b3; /* Dark Blue */
+  background-color: #f0f8ff; /* Light blue background */
+  border-color: #045a0d;
   display: block;
   visibility: visible;
   opacity: 1;
   transition: background-color 0.2s ease-in-out;
 }
+
 
 
 /* 🔥 Highlight the menu item when navigating with arrow keys */
@@ -83,6 +85,11 @@
   display: block;
   visibility: visible;
   opacity: 1;
+}
+/* 🔥 Full menu highlight when opened */
+.menu-button-actions [role="menu"].menu-open {
+  background-color: #dff0d8; /* Light green */
+  border: 2px solid #045a0d;
 }
 
 /* Prevent outline removal */
