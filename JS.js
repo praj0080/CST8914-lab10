@@ -154,10 +154,18 @@ class MenuButtonActions {
   }
 
   onMenuitemClick(event) {
-    this.performMenuAction(event.currentTarget);
+    let selectedItem = event.currentTarget;
+    
+    // Update the Pizza Choice input box
+    document.getElementById('action_output').value = selectedItem.textContent.trim();
+    
+    // Close the menu
     this.closePopup();
+    
+    // Move focus back to the button
     this.buttonNode.focus();
-  }
+}
+
 
   onBackgroundMousedown(event) {
     if (!this.domNode.contains(event.target)) {
