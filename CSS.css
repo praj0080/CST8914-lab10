@@ -32,6 +32,7 @@
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 }
 
+./* Default menu item styling */
 .menu-button-actions [role="menuitem"] {
   padding: 6px;
   border: 2px solid transparent;
@@ -55,19 +56,19 @@
 
 
 
-/* 🔥 Highlight the menu item when navigating with arrow keys */
+/* 🔥 Highlight when using arrow keys */
 .menu-button-actions [role="menuitem"].focused {
-  background: #045a0d; /* Green background */
+  background: #028a0f; /* Green */
   color: white;
   border: 2px solid #007BFF; /* Blue border */
 }
 
-/* 🔥 Also highlight when manually hovered */
+
+/* 🔥 Also highlight when using mouse hover */
 .menu-button-actions [role="menuitem"]:hover {
-  background: #038c10; /* Darker green */
+  background: #028a0f; /* Same green */
   color: white;
 }
-
 /* Focus styling */
 .menu-button-actions button:hover,
 .menu-button-actions button:focus,
