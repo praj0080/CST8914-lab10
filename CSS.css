@@ -43,6 +43,16 @@
   width: 100%;
 }
 
+/* Change background color when menu is opened */
+.menu-button-actions button[aria-expanded="true"] + [role="menu"] {
+  background-color: #dff0d8; /* Light green */
+  border-color: #045a0d;
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  transition: background-color 0.2s ease-in-out;
+}
+
 /* 🔥 Highlight the menu item when navigating with arrow keys */
 .menu-button-actions [role="menuitem"].focused {
   background: #045a0d; /* Green background */
