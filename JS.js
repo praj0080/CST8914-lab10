@@ -62,7 +62,13 @@ class MenuButtonActions {
 
   setFocusToMenuitem(newMenuitem) {
     this.menuitemNodes.forEach(function (item) {
-// TOUFIC'S COMMENT: Placeholder for the roving tabindex logic  ;)
+// TOUFIC'S COMMENT: Placeholder for the roving tabindex logic
+if (item === newMenuitem) {
+      item.tabIndex = 0;    // make it tabbable and newly focus.
+      item.focus();         // Setting upto focus element.
+    } else {
+      item.tabIndex = -1;   // removing from the tab order.  
+    }
     });
   }
 
